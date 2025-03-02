@@ -3,6 +3,9 @@ import Constants from 'expo-constants';
 import theme from '../theme';
 import AppBarTab from './AppBarTab';
 import { Link } from 'react-router-native';
+import { useQuery } from '@apollo/client';
+import { GET_ME } from '../graphql/queries';
+
 const styles = StyleSheet.create({
   container: {
     paddingTop: Constants.statusBarHeight,
@@ -15,16 +18,21 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
+  const data = useQuery(GET_ME)
   return (
   <View style={styles.container}>
     {/* With contentContainerStyle flexGrow 1 when view is flex, prevents from doing unwanted behaviour */}
     <ScrollView horizontal contentContainerStyle={{ flexGrow: 1 }}>
-      <Link to="/">
+      <Link to="/repositories">
         <AppBarTab text={"Repositories"}/>
       </Link>
-      <Link to="/signIn">
-        <AppBarTab text={"Sign In"}/>
-      </Link>
+      {data.data?.me !== null ?
+          <AppBarTab text={"Sign Out"}/>
+        :
+        <Link to="/signIn">
+          <AppBarTab text={"Sign In"}/>
+        </Link> 
+      }
     </ScrollView>
   </View>
     )

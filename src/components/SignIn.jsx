@@ -2,9 +2,14 @@ import { TextInput, Pressable, View } from 'react-native';
 import Text from './Text';
 import { isString, useFormik } from 'formik';
 import { StyleSheet } from 'react-native';
+import useSignIn from '../hooks/useSignIn'
 import * as yup from 'yup';
+import { useNavigate } from "react-router";
+
 
 import theme from '../theme';
+
+
 const styles = StyleSheet.create({
   container:{
     padding:10,
@@ -79,11 +84,20 @@ const SignInForm = ({ onSubmit }) => {
 };
 
 const SignIn = () => {
-  const onSubmit = values => {
+  const [signIn] = useSignIn();
+  const navigate = useNavigate()
+  const onSubmit = async values => {
     const username = values.username
     const password = values.password
     if (isString(username) && isString(password)) {
-      console.log(`Sign in: ${username} ${password}`);
+      try {
+        const result = await signIn({ username, password });
+        if(result){
+          navigate("/")
+        }
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 

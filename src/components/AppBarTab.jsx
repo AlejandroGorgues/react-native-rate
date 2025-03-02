@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
 import Text from './Text';
 import theme from '../theme';
+import useSignOut from '../hooks/useSignOut'
+import { useNavigate } from "react-router";
 
 const styles = StyleSheet.create({
   text:{
@@ -12,7 +14,13 @@ const styles = StyleSheet.create({
 });
 
 const AppBarTab = ({text}) => {
-  return <Text style={styles.text}>{text}</Text>
+  const [signOut] = useSignOut();
+  const navigate = useNavigate()
+  const signOutEvent = ()=>{
+    signOut()
+    navigate("/signIn")
+  }
+  return <Text onPress={text === "Sign Out" ? signOutEvent : null} style={styles.text}>{text}</Text>
 };
 
 export default AppBarTab;
