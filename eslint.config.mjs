@@ -20,7 +20,7 @@ export default [
         "version": "detect"
       }
     },
-    "extends": ["plugin:react/recommended"],
+    "extends": ["plugin:react/recommended","plugin:jest/recommended"],
     "parser": "@babel/eslint-parser",
     "env": {
       "react-native/react-native": true

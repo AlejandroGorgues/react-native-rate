@@ -1,25 +1,60 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_REPOSITORIES, GET_REPOSITORY } from '../graphql/queries';
 
-const useRepositories = () => {
-  const [repositories, setRepositories] = useState();
-  const [loading, setLoading] = useState(false);
 
-  const fetchRepositories = async () => {
-    setLoading(true);
+export const useRepositories = (variables) => {
+  const { data, loading, fetchMore, error, ...result } = useQuery(GET_REPOSITORIES, {
+    fetchPolicy: 'cache-and-network',
+    variables
+  });
+  const handleFetchMore = () => {
+    const canFetchMore = !loading && data?.repositories.pageInfo.hasNextPage;
 
-    // Replace the IP address part with your own IP address!
-    const response = await fetch('http://localhost:4000/api/repositories');
-    const json = await response.json();
+    if (!canFetchMore) {
+      return;
+    }
 
-    setLoading(false);
-    setRepositories(json);
+    fetchMore({
+      variables: {
+        after: data.repositories.pageInfo.endCursor,
+        ...variables,
+      },
+    });
   };
 
-  useEffect(() => {
-    fetchRepositories();
-  }, []);
 
-  return { repositories, loading, refetch: fetchRepositories };
+  return { repositories: data?.repositories ?? [], // Si no hay datos, devuelve un array vacío
+    loading,
+    error,
+    fetchMore: handleFetchMore,
+    ...result };
 };
 
-export default useRepositories;
+export const useRepository = (variables) => {
+  const { data, loading, fetchMore, error, ...result } = useQuery(GET_REPOSITORY, {
+    fetchPolicy: 'cache-and-network',
+    variables,
+    skip: !variables.repositoryId, // Evita ejecutar la query si no hay ID
+  });
+
+  const handleFetchMore = () => {
+    const canFetchMore = !loading && data?.repositories.reviews.pageInfo.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+
+    fetchMore({
+      variables: {
+        after: data.repositories.reviews.pageInfo.endCursor,
+        ...variables,
+      },
+    });
+  };
+  
+  return { repository: data?.repository ?? null, // Si no hay datos, devuelve null
+    loading,
+    error, 
+    fetchMore: handleFetchMore,
+    ...result };
+};

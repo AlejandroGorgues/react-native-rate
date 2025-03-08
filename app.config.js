@@ -22,7 +22,7 @@ export default {
     adaptiveIcon: {
       foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#ffffff"
-    }
+    },
   },
   web: {
     favicon: "./assets/favicon.png"

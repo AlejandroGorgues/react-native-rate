@@ -4,6 +4,7 @@ const theme = {
       textPrimary: '#24292e',
       textSecondary: '#586069',
       primary: '#0366d6',
+      primaryError: '#d22e2e',
       languageTextPrimary:'#ffffff',
       mainBackgroundColor: '#e1e4e8',
       itemBackgroundColor: '#ffffff',
